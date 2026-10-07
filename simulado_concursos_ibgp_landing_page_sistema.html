@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulado IBGP - Prefeitura de Contagem/MG</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 0.4; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        .animate-pulse-subtle { animation: pulse-ring 3s infinite ease-in-out; }
+    </style>
+</head>
+<body class="h-full text-slate-800 flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Top Header / Bar -->
+    <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="app.showScreen('intro')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-cyan-400 flex items-center justify-center font-black text-xl text-white shadow-lg shadow-brand-500/20">
+                    P
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-tight leading-none text-white">Prova<span class="text-brand-500">Pro</span></h1>
+                    <p class="text-xs text-slate-400">Simulados Interativos IBGP</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                <button onclick="app.openJsonModal()" class="text-xs sm:text-sm font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-2">
+                    <i class="fa-solid fa-code text-brand-500"></i>
+                    <span class="hidden sm:inline">Carregar JSON</span>
+                </button>
+                <button id="sound-toggle-btn" onclick="app.toggleSound()" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition" title="Alternar Sons">
+                    <i class="fa-solid fa-volume-high text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col justify-center">
+
+        <!-- ==================== TELA INICIAL (LANDING PAGE) ==================== -->
+        <section id="screen-intro" class="w-full max-w-4xl mx-auto py-4 sm:py-8">
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-200/80 overflow-hidden">
+                <!-- Banner Header -->
+                <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-brand-900 text-white p-6 sm:p-10 relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                        <span id="intro-banca-badge" class="bg-brand-500/20 border border-brand-400/30 text-brand-300 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full">
+                            Banca IBGP
+                        </span>
+                        <span id="intro-ano-badge" class="bg-slate-800/80 text-slate-300 text-xs font-semibold px-3 py-1 rounded-full border border-slate-700">
+                            Concurso 2026
+                        </span>
+                    </div>
+
+                    <h2 id="intro-titulo" class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">
+                        Simulado Assistente Administrativo
+                    </h2>
+                    <p id="intro-concurso" class="text-slate-300 text-base sm:text-lg font-medium flex items-center gap-2">
+                        <i class="fa-solid fa-building-columns text-brand-400"></i>
+                        Prefeitura Municipal de Contagem/MG
+                    </p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-slate-100 bg-slate-50 border-b border-slate-200">
+                    <div class="p-4 sm:p-6 text-center">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">Questões</span>
+                        <div class="text-2xl sm:text-3xl font-black text-slate-800" id="intro-total-questoes">--</div>
+                    </div>
+                    <div class="p-4 sm:p-6 text-center">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">Duração</span>
+                        <div class="text-2xl sm:text-3xl font-black text-slate-800" id="intro-duracao">-- min</div>
+                    </div>
+                    <div class="p-4 sm:p-6 text-center">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">Aprovação Mín.</span>
+                        <div class="text-2xl sm:text-3xl font-black text-emerald-600" id="intro-corte">--%</div>
+                    </div>
+                    <div class="p-4 sm:p-6 text-center">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">Disciplinas</span>
+                        <div class="text-2xl sm:text-3xl font-black text-brand-600" id="intro-total-blocos">--</div>
+                    </div>
+                </div>
+
+                <!-- Body Content -->
+                <div class="p-6 sm:p-8 space-y-6">
+                    <div>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group text-brand-500"></i> Disciplinas Inclusas neste Simulado
+                        </h3>
+                        <div id="intro-disciplinas-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <!-- JS injected subjects -->
+                        </div>
+                    </div>
+
+                    <!-- Options Card -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" id="check-embaralhar" class="w-5 h-5 text-brand-600 rounded border-slate-300 focus:ring-brand-500 cursor-pointer">
+                            <label for="check-embaralhar" class="text-sm font-medium text-slate-700 cursor-pointer select-none">
+                                Embaralhar ordem das alternativas (A, B, C, D)
+                            </label>
+                        </div>
+                        <span class="text-xs text-slate-500">Regras de prova oficial aplicadas</span>
+                    </div>
+
+                    <!-- Resume alert if exists -->
+                    <div id="intro-resume-banner" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between flex-wrap gap-3">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-clock-rotate-left text-amber-600 text-xl"></i>
+                            <div>
+                                <h4 class="font-bold text-amber-900 text-sm">Você possui uma prova em andamento!</h4>
+                                <p class="text-xs text-amber-700">Progresso salvo localmente. Deseja continuar?</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="app.discardSavedAndStart()" class="text-xs font-semibold text-amber-800 hover:bg-amber-100 px-3 py-2 rounded-lg transition">
+                                Descartar e Iniciar Nova
+                            </button>
+                            <button onclick="app.resumeExam()" class="text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 px-4 py-2 rounded-lg transition shadow-sm">
+                                Continuar Prova
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Actions Bar -->
+                    <div class="pt-2 flex flex-col sm:flex-row items-center gap-4">
+                        <button onclick="app.startExam()" class="w-full sm:w-auto flex-1 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 transition-all transform hover:-translate-y-0.5 text-center text-lg flex items-center justify-center gap-3">
+                            <i class="fa-solid fa-play"></i>
+                            Iniciar Prova Agora
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TELA DE PROVA (SIMULADO ATIVO) ==================== -->
+        <section id="screen-exam" class="hidden w-full max-w-5xl mx-auto space-y-4">
+            
+            <!-- Sticky Header Bar for Exam -->
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-4 sticky top-20 z-20 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <span id="exam-disciplina-tag" class="bg-brand-50 text-brand-700 border border-brand-200 text-xs font-bold px-3 py-1.5 rounded-lg max-w-[200px] sm:max-w-xs truncate">
+                        Língua Portuguesa
+                    </span>
+                    <span id="exam-progress-counter" class="text-slate-500 text-xs sm:text-sm font-semibold">
+                        Questão <strong id="exam-q-current" class="text-slate-800 font-bold">1</strong> de <span id="exam-q-total">30</span>
+                    </span>
+                </div>
+
+                <!-- Timer -->
+                <div id="timer-box" class="flex items-center gap-2 bg-slate-900 text-white font-mono px-4 py-2 rounded-xl border border-slate-800 text-sm font-bold shadow-inner">
+                    <i class="fa-regular fa-clock text-brand-400"></i>
+                    <span id="timer-display">00:00:00</span>
+                </div>
+
+                <!-- Navigation Palette Toggle -->
+                <button onclick="app.toggleNavDrawer()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2 rounded-lg transition flex items-center gap-2">
+                    <i class="fa-solid fa-grid-2 text-slate-500"></i>
+                    <span>Mapa da Prova</span>
+                </button>
+            </div>
+
+            <!-- Main Question Card -->
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-200/80 overflow-hidden">
+                
+                <!-- Optional Base Text Section -->
+                <div id="base-text-container" class="hidden border-b border-slate-200 bg-slate-50 p-5 sm:p-6">
+                    <div class="flex items-center justify-between cursor-pointer mb-2" onclick="app.toggleBaseText()">
+                        <div class="flex items-center gap-2 text-slate-700 font-bold text-sm">
+                            <i class="fa-solid fa-file-lines text-brand-600"></i>
+                            <span id="base-text-title">Texto Base para as questões</span>
+                        </div>
+                        <button class="text-xs text-brand-600 hover:underline font-semibold flex items-center gap-1">
+                            <span id="base-text-toggle-label">Ocultar texto</span>
+                            <i id="base-text-icon" class="fa-solid fa-chevron-up text-xs"></i>
+                        </button>
+                    </div>
+                    <div id="base-text-body" class="text-slate-700 text-sm sm:text-base leading-relaxed bg-white p-4 rounded-xl border border-slate-200 max-h-60 overflow-y-auto custom-scrollbar whitespace-pre-line font-serif">
+                        <!-- JS injected base text -->
+                    </div>
+                </div>
+
+                <div class="p-6 sm:p-8 space-y-6">
+                    
+                    <!-- Question Header Info -->
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-slate-800 text-white text-xs font-black px-2.5 py-1 rounded-md" id="exam-q-num">
+                                Q1
+                            </span>
+                            <span id="exam-assunto-tag" class="text-xs font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md">
+                                Vocabulário
+                            </span>
+                        </div>
+                        <span id="exam-banca-small" class="text-xs text-slate-400 font-medium">Banca IBGP</span>
+                    </div>
+
+                    <!-- Enunciado -->
+                    <div id="exam-enunciado" class="text-base sm:text-xl font-semibold text-slate-900 leading-snug">
+                        <!-- JS injected enunciado -->
+                    </div>
+
+                    <!-- Alternatives List -->
+                    <div id="exam-alternativas-list" class="space-y-3 pt-2">
+                        <!-- JS Injected options -->
+                    </div>
+
+                    <!-- Feedback Alert (Visible after confirmation) -->
+                    <div id="exam-feedback-box" class="hidden p-5 rounded-xl border transition-all">
+                        <div class="flex items-start gap-3">
+                            <div id="feedback-icon-container" class="mt-0.5"></div>
+                            <div class="space-y-2 flex-1">
+                                <h4 id="feedback-title" class="font-bold text-base"></h4>
+                                <div id="feedback-explicacao" class="text-sm leading-relaxed"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Bar -->
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between flex-wrap gap-4">
+                        <button id="btn-prev-question" onclick="app.prevQuestion()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-xl transition text-sm flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
+                            <i class="fa-solid fa-arrow-left"></i> Anterior
+                        </button>
+
+                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                            <!-- Confirm Button -->
+                            <button id="btn-confirm-answer" onclick="app.confirmAnswer()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-2 text-sm">
+                                <i class="fa-solid fa-check"></i> Confirmar Resposta
+                            </button>
+
+                            <!-- Next/Finish Button -->
+                            <button id="btn-next-question" onclick="app.nextQuestion()" class="hidden w-full sm:w-auto bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-brand-500/20 transition flex items-center justify-center gap-2 text-sm">
+                                <span id="next-btn-text">Próxima Questão</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Drawer / Modal for Navigating Questions -->
+        <div id="nav-drawer" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden transition-opacity flex justify-end">
+            <div class="bg-white w-full max-w-md h-full shadow-2xl p-6 flex flex-col justify-between overflow-y-auto">
+                <div>
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-6">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-lg">Mapa de Questões</h3>
+                            <p class="text-xs text-slate-500">Navegue rapidamente pelas questões</p>
+                        </div>
+                        <button onclick="app.toggleNavDrawer()" class="text-slate-400 hover:text-slate-600 p-2">
+                            <i class="fa-solid fa-xmark text-xl"></i>
+                        </button>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="grid grid-cols-2 gap-2 text-xs mb-6 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-slate-200 border border-slate-300"></span>
+                            <span>Não respondida</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-brand-500"></span>
+                            <span>Selecionada</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                            <span>Confirmada Correta</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                            <span>Confirmada Incorreta</span>
+                        </div>
+                    </div>
+
+                    <!-- Grid of Question Badges -->
+                    <div id="drawer-grid" class="grid grid-cols-5 gap-2.5">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-slate-200 mt-6">
+                    <button onclick="app.finishExamPrompt()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl transition shadow-md flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-flag-checkered"></i> Finalizar e Entregar Simulado
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TELA DE RESULTADO ==================== -->
+        <section id="screen-result" class="hidden w-full max-w-4xl mx-auto py-6 space-y-6">
+            
+            <!-- Result Hero Card -->
+            <div id="result-status-card" class="rounded-2xl p-6 sm:p-10 text-white shadow-2xl relative overflow-hidden text-center sm:text-left">
+                <div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div class="space-y-2">
+                        <span id="result-status-badge" class="inline-block text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full bg-white/20 backdrop-blur-md">
+                            Resultado Final
+                        </span>
+                        <h2 id="result-status-title" class="text-3xl sm:text-5xl font-extrabold tracking-tight">
+                            Aprovado! 🎉
+                        </h2>
+                        <p id="result-status-subtitle" class="text-white/80 text-sm sm:text-base">
+                            Parabéns! Você atingiu o desempenho necessário para a aprovação.
+                        </p>
+                    </div>
+
+                    <!-- Score Badge -->
+                    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 text-center min-w-[160px]">
+                        <span class="text-xs uppercase font-bold text-white/70 block mb-1">Nota Final</span>
+                        <div id="result-score-percent" class="text-4xl sm:text-5xl font-black">
+                            85%
+                        </div>
+                        <span id="result-score-fraction" class="text-xs font-semibold text-white/80 mt-1 block">
+                            25 de 30 acertos
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Overview Cards -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 text-center shadow-sm">
+                    <i class="fa-solid fa-circle-check text-emerald-500 text-xl mb-1"></i>
+                    <span class="text-xs font-semibold text-slate-400 block">Acertos</span>
+                    <span id="stat-correct" class="text-xl font-bold text-slate-800">0</span>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 text-center shadow-sm">
+                    <i class="fa-solid fa-circle-xmark text-rose-500 text-xl mb-1"></i>
+                    <span class="text-xs font-semibold text-slate-400 block">Erros</span>
+                    <span id="stat-wrong" class="text-xl font-bold text-slate-800">0</span>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 text-center shadow-sm">
+                    <i class="fa-solid fa-clock text-brand-500 text-xl mb-1"></i>
+                    <span class="text-xs font-semibold text-slate-400 block">Tempo Gasto</span>
+                    <span id="stat-time" class="text-xl font-bold text-slate-800">00:00</span>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 text-center shadow-sm">
+                    <i class="fa-solid fa-bullseye text-amber-500 text-xl mb-1"></i>
+                    <span class="text-xs font-semibold text-slate-400 block">Nota Mínima</span>
+                    <span id="stat-min" class="text-xl font-bold text-slate-800">60%</span>
+                </div>
+            </div>
+
+            <!-- Discipline Breakdown -->
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 space-y-4">
+                <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-chart-pie text-brand-600"></i> Desempenho por Disciplina
+                </h3>
+                <div id="result-subjects-breakdown" class="space-y-4">
+                    <!-- JS Injected breakdown -->
+                </div>
+            </div>
+
+            <!-- Gabarito Completo / Review Section -->
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-lg">Gabarito Completo & Comentários</h3>
+                        <p class="text-xs text-slate-500">Revise cada resposta e suas justificativas teóricas</p>
+                    </div>
+
+                    <!-- Filter buttons -->
+                    <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold">
+                        <button onclick="app.filterReview('all')" id="btn-filter-all" class="px-3 py-1.5 rounded-lg bg-white shadow-sm text-slate-800">Todas</button>
+                        <button onclick="app.filterReview('correct')" id="btn-filter-correct" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900">Acertos</button>
+                        <button onclick="app.filterReview('wrong')" id="btn-filter-wrong" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900">Erros</button>
+                    </div>
+                </div>
+
+                <div id="review-list-container" class="space-y-4">
+                    <!-- JS Injected Review items -->
+                </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex flex-wrap items-center justify-between gap-4 pt-4">
+                <button onclick="app.showScreen('intro')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-6 py-3 rounded-xl transition text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-house"></i> Voltar ao Início
+                </button>
+                <div class="flex items-center gap-3">
+                    <button onclick="app.exportProofJson()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-5 py-3 rounded-xl transition text-sm flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-download"></i> Baixar Prova JSON
+                    </button>
+                    <button onclick="app.restartExam()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-6 py-3 rounded-xl transition text-sm flex items-center gap-2 shadow-lg shadow-brand-500/20">
+                        <i class="fa-solid fa-rotate-right"></i> Refazer Simulado
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Modal Carregar JSON Customizado -->
+    <div id="json-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 space-y-4 max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-file-code text-brand-600"></i> Importar ou Editar Prova JSON
+                </h3>
+                <button onclick="app.closeJsonModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-600">
+                Cole abaixo a estrutura JSON da prova seguindo o formato padrão ou selecione um arquivo `.json`.
+            </p>
+
+            <div class="flex items-center gap-3">
+                <label class="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-4 py-2 rounded-xl transition border border-slate-300 flex items-center gap-2">
+                    <i class="fa-solid fa-upload"></i> Escolher Arquivo JSON
+                    <input type="file" id="json-file-input" accept=".json" class="hidden" onchange="app.handleFileUpload(event)">
+                </label>
+                <button onclick="app.loadDefaultSampleJson()" class="text-xs font-semibold text-brand-600 hover:underline">
+                    Restaurar Simulado IBGP Padrão
+                </button>
+            </div>
+
+            <textarea id="json-textarea" class="w-full flex-1 min-h-[250px] font-mono text-xs bg-slate-900 text-emerald-400 p-4 rounded-xl border border-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 custom-scrollbar" spellcheck="false"></textarea>
+
+            <div id="json-error-msg" class="hidden text-xs text-rose-600 font-bold bg-rose-50 p-2.5 rounded-lg border border-rose-200"></div>
+
+            <div class="flex justify-end gap-3 border-t border-slate-200 pt-3">
+                <button onclick="app.closeJsonModal()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+                    Cancelar
+                </button>
+                <button onclick="app.applyCustomJson()" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs transition shadow-md">
+                    Aplicar Prova JSON
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const DEFAULT_PROVA_DATA = {
+            "prova": {
+                "id": "contagem-2026-simulado-ibgp",
+                "titulo": "Simulado Assistente Administrativo",
+                "concurso": "Prefeitura Municipal de Contagem/MG",
+                "banca": "IBGP",
+                "ano": 2026,
+                "duracao_minutos": 60,
+                "aprovacao_minima_percent": 60,
+                "embaralhar_alternativas": false,
+                "blocos": [
+                    {
+                        "id": "bloco-portugues",
+                        "disciplina": "Língua Portuguesa",
+                        "texto_base": {
+                            "titulo": "Trabalho voluntário cresce no Brasil e transforma rotina nas cidades",
+                            "conteudo": "Após o período de isolamento social e as recentes transformações socioeconômicas, o trabalho voluntário registrou expressivo crescimento no Brasil. Dados de pesquisas recentes apontam que cidadãos estão cada vez mais engajados em ações comunitárias, apoio assistencial e projetos ambientais municipais.\n\nA gestão pública local tem reconhecido a relevância desse engajamento citizen-driven para complementar políticas sociais. Organizações não governamentais e prefeituras trabalham em parceria para canalizar esforços em prol das populações vulneráveis, promovendo inclusão e solidariedade."
+                        },
+                        "questoes": [
+                            {
+                                "id": "q01",
+                                "numero": 1,
+                                "enunciado": "Assinale a alternativa em que a palavra 'engajadas' pode ser substituída no texto sem alterar seu sentido original:",
+                                "alternativas": [
+                                    { "letra": "A", "texto": "Impedidas." },
+                                    { "letra": "B", "texto": "Envolvidas." },
+                                    { "letra": "C", "texto": "Afastadas." },
+                                    { "letra": "D", "texto": "Contratadas." }
+                                ],
+                                "gabarito": "B",
+                                "explicacao": "No contexto lido, 'engajadas' remete a pessoas participativas, comprometidas e envolvidas em causas sociais.",
+                                "disciplina": "Língua Portuguesa",
+                                "assunto": "Vocabulário / Sinônimos"
+                            },
+                            {
+                                "id": "q02",
+                                "numero": 2,
+                                "enunciado": "De acordo com o texto base, o crescimento do trabalho voluntário no Brasil está associado a:",
+                                "alternativas": [
+                                    { "letra": "A", "texto": "Aumento obrigatório de impostos municipais." },
+                                    { "letra": "B", "texto": "Transformações socioeconômicas e período pós-isolamento." },
+                                    { "letra": "C", "texto": "Redução total das ONGs no país." },
+                                    { "letra": "D", "texto": "Exigência direta para cargos de concurso público." }
+                                ],
+                                "gabarito": "B",
+                                "explicacao": "O primeiro parágrafo afirma expressamente que o crescimento ocorre 'Após o período de isolamento social e as recentes transformações socioeconômicas'.",
+                                "disciplina": "Língua Portuguesa",
+                                "assunto": "Compreensão de Texto"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "bloco-legislacao",
+                        "disciplina": "Legislação e Estatuto de Contagem",
+                        "questoes": [
+                            {
+                                "id": "q03",
+                                "numero": 3,
+                                "enunciado": "Com base nos princípios norteadores da Administração Pública expressos na CF/88 e aplicados no município de Contagem, assinale a opção correta:",
+                                "alternativas": [
+                                    { "letra": "A", "texto": "A impessoalidade permite favorecimento de parentes em licitações públicas." },
+                                    { "letra": "B", "texto": "A legalidade exige que a administração só atue estritamente conforme a lei autoriza." },
+                                    { "letra": "C", "texto": "A publicidade determina segredo absoluto em todos os atos administrativos sem exceção." },
+                                    { "letra": "D", "texto": "A eficiência substitui a necessidade de cumprir os demais princípios formais." }
+                                ],
+                                "gabarito": "B",
+                                "explicacao": "Pelo Princípio da Legalidade Administrativa (art. 37 da CF/88), o administrador público só pode fazer o que a lei expressamente autoriza ou determina.",
+                                "disciplina": "Legislação e Estatuto de Contagem",
+                                "assunto": "Direito Administrativo"
+                            },
+                            {
+                                "id": "q04",
+                                "numero": 4,
+                                "enunciado": "O servidor público municipal aprovado em concurso público adquire estabilidade após qual período de efetivo exercício, sujeito à avaliação especial de desempenho?",
+                                "alternativas": [
+                                    { "letra": "A", "texto": "1 (um) ano." },
+                                    { "letra": "B", "texto": "2 (dois) anos." },
+                                    { "letra": "C", "texto": "3 (três) anos." },
+                                    { "letra": "D", "texto": "5 (cinco) anos." }
+                                ],
+                                "gabarito": "C",
+                                "explicacao": "Nos termos do artigo 41 da Constituição Federal, são estáveis após 3 (três) anos de efetivo exercício os servidores nomeados para cargo de provimento efetivo.",
+                                "disciplina": "Legislação e Estatuto de Contagem",
+                                "assunto": "Estatuto do Servidor"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "bloco-informatica",
+                        "disciplina": "Nocões de Informática",
+                        "questoes": [
+                            {
+                                "id": "q05",
+                                "numero": 5,
+                                "enunciado": "No sistema operacional Windows 11 / 10, qual atalho de teclado é comumente utilizado para alternar rapidamente entre as janelas abertas?",
+                                "alternativas": [
+                                    { "letra": "A", "texto": "Ctrl + Shift + Esc" },
+                                    { "letra": "B", "texto": "Alt + Tab" },
+                                    { "letra": "C", "texto": "Win + L" },
+                                    { "letra": "D", "texto": "Ctrl + Alt + Del" }
+                                ],
+                                "gabarito": "B",
+                                "explicacao": "O atalho 'Alt + Tab' é a combinação padrão para alternar e navegar entre aplicativos e janelas abertas.",
+                                "disciplina": "Nocões de Informática",
+                                "assunto": "Atalhos do Windows"
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        class SimuladoApp {
+            constructor() {
+                this.provaData = null;
+                this.flatQuestions = [];
+                this.currentIndex = 0;
+                
+                // User state
+                this.selectedAnswers = {}; // qId -> letra
+                this.confirmedAnswers = {}; // qId -> boolean
+                this.timerInterval = null;
+                this.secondsElapsed = 0;
+                this.soundEnabled = true;
+
+                this.reviewFilter = 'all';
+
+                this.init();
+            }
+
+            init() {
+                // Try loading stored data or load default
+                const savedData = localStorage.getItem('ibgp_prova_custom_data');
+                if (savedData) {
+                    try {
+                        this.provaData = JSON.parse(savedData);
+                    } catch (e) {
+                        this.provaData = DEFAULT_PROVA_DATA;
+                    }
+                } else {
+                    this.provaData = DEFAULT_PROVA_DATA;
+                }
+
+                this.processQuestionsData();
+                this.setupUI();
+                this.checkLocalStorageSession();
+            }
+
+            processQuestionsData() {
+                this.flatQuestions = [];
+                if (!this.provaData || !this.provaData.prova || !this.provaData.prova.blocos) return;
+
+                let counter = 1;
+                this.provaData.prova.blocos.forEach(bloco => {
+                    bloco.questoes.forEach(q => {
+                        this.flatQuestions.push({
+                            ...q,
+                            numero: counter++,
+                            disciplina: bloco.disciplina,
+                            texto_base: bloco.texto_base || null
+                        });
+                    });
+                });
+            }
+
+            setupUI() {
+                const prova = this.provaData.prova;
+                document.getElementById('intro-titulo').textContent = prova.titulo || "Simulado";
+                document.getElementById('intro-concurso').innerHTML = `<i class="fa-solid fa-building-columns text-brand-400"></i> ${prova.concurso || ''}`;
+                document.getElementById('intro-banca-badge').textContent = `Banca ${prova.banca || 'IBGP'}`;
+                document.getElementById('intro-ano-badge').textContent = `Ano ${prova.ano || 2026}`;
+                document.getElementById('intro-total-questoes').textContent = this.flatQuestions.length;
+                document.getElementById('intro-duracao').textContent = `${prova.duracao_minutos || 180} min`;
+                document.getElementById('intro-corte').textContent = `${prova.aprovacao_minima_percent || 60}%`;
+                document.getElementById('intro-total-blocos').textContent = prova.blocos ? prova.blocos.length : 0;
+
+                // Render subject list
+                const listEl = document.getElementById('intro-disciplinas-list');
+                listEl.innerHTML = '';
+                if (prova.blocos) {
+                    prova.blocos.forEach(bloco => {
+                        const count = bloco.questoes ? bloco.questoes.length : 0;
+                        listEl.innerHTML += `
+                            <div class="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between shadow-sm">
+                                <span class="font-semibold text-slate-800 text-sm">${bloco.disciplina}</span>
+                                <span class="bg-slate-100 text-slate-600 text-xs font-bold px-2.5 py-1 rounded-md">${count} questões</span>
+                            </div>
+                        `;
+                    });
+                }
+            }
+
+            checkLocalStorageSession() {
+                const savedProgress = localStorage.getItem('ibgp_simulado_progress');
+                if (savedProgress) {
+                    document.getElementById('intro-resume-banner').classList.remove('hidden');
+                } else {
+                    document.getElementById('intro-resume-banner').classList.add('hidden');
+                }
+            }
+
+            showScreen(screenName) {
+                document.getElementById('screen-intro').classList.add('hidden');
+                document.getElementById('screen-exam').classList.add('hidden');
+                document.getElementById('screen-result').classList.add('hidden');
+
+                if (screenName === 'intro') {
+                    document.getElementById('screen-intro').classList.remove('hidden');
+                    this.checkLocalStorageSession();
+                } else if (screenName === 'exam') {
+                    document.getElementById('screen-exam').classList.remove('hidden');
+                } else if (screenName === 'result') {
+                    document.getElementById('screen-result').classList.remove('hidden');
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            startExam() {
+                const shuffle = document.getElementById('check-embaralhar').checked;
+                this.selectedAnswers = {};
+                this.confirmedAnswers = {};
+                this.currentIndex = 0;
+                this.secondsElapsed = 0;
+
+                if (shuffle) {
+                    this.flatQuestions.forEach(q => {
+                        q.alternativas = this.shuffleArray([...q.alternativas]);
+                    });
+                }
+
+                this.saveProgressToStorage();
+                this.startTimer();
+                this.showScreen('exam');
+                this.renderCurrentQuestion();
+            }
+
+            resumeExam() {
+                const savedProgress = localStorage.getItem('ibgp_simulado_progress');
+                if (savedProgress) {
+                    try {
+                        const state = JSON.parse(savedProgress);
+                        this.selectedAnswers = state.selectedAnswers || {};
+                        this.confirmedAnswers = state.confirmedAnswers || {};
+                        this.currentIndex = state.currentIndex || 0;
+                        this.secondsElapsed = state.secondsElapsed || 0;
+                        
+                        this.startTimer();
+                        this.showScreen('exam');
+                        this.renderCurrentQuestion();
+                    } catch (e) {
+                        this.startExam();
+                    }
+                } else {
+                    this.startExam();
+                }
+            }
+
+            discardSavedAndStart() {
+                localStorage.removeItem('ibgp_simulado_progress');
+                document.getElementById('intro-resume-banner').classList.add('hidden');
+                this.startExam();
+            }
+
+            startTimer() {
+                if (this.timerInterval) clearInterval(this.timerInterval);
+                const maxSeconds = (this.provaData.prova.duracao_minutos || 180) * 60;
+
+                this.timerInterval = setInterval(() => {
+                    this.secondsElapsed++;
+                    this.updateTimerDisplay(maxSeconds);
+                    if (this.secondsElapsed % 5 === 0) {
+                        this.saveProgressToStorage();
+                    }
+
+                    if (this.secondsElapsed >= maxSeconds) {
+                        clearInterval(this.timerInterval);
+                        this.playSound('finish');
+                        this.finishExam();
+                    }
+                }, 1000);
+                this.updateTimerDisplay(maxSeconds);
+            }
+
+            updateTimerDisplay(maxSeconds) {
+                const remaining = Math.max(0, maxSeconds - this.secondsElapsed);
+                const hrs = Math.floor(remaining / 3600);
+                const mins = Math.floor((remaining % 3600) / 60);
+                const secs = remaining % 60;
+
+                const timerStr = `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                const timerEl = document.getElementById('timer-display');
+                const timerBox = document.getElementById('timer-box');
+
+                timerEl.textContent = timerStr;
+
+                // Visual alert when less than 5 minutes remain
+                if (remaining <= 300) {
+                    timerBox.classList.remove('bg-slate-900');
+                    timerBox.classList.add('bg-rose-600', 'animate-pulse');
+                } else {
+                    timerBox.classList.remove('bg-rose-600', 'animate-pulse');
+                    timerBox.classList.add('bg-slate-900');
+                }
+            }
+
+            saveProgressToStorage() {
+                const state = {
+                    selectedAnswers: this.selectedAnswers,
+                    confirmedAnswers: this.confirmedAnswers,
+                    currentIndex: this.currentIndex,
+                    secondsElapsed: this.secondsElapsed
+                };
+                localStorage.setItem('ibgp_simulado_progress', JSON.stringify(state));
+            }
+
+            renderCurrentQuestion() {
+                const q = this.flatQuestions[this.currentIndex];
+                if (!q) return;
+
+                document.getElementById('exam-q-current').textContent = this.currentIndex + 1;
+                document.getElementById('exam-q-total').textContent = this.flatQuestions.length;
+                document.getElementById('exam-disciplina-tag').textContent = q.disciplina;
+                document.getElementById('exam-q-num').textContent = `Q${q.numero}`;
+                document.getElementById('exam-assunto-tag').textContent = q.assunto || 'Geral';
+                document.getElementById('exam-enunciado').textContent = q.enunciado;
+
+                // Base Text Handler
+                const baseTextContainer = document.getElementById('base-text-container');
+                if (q.texto_base && q.texto_base.conteudo) {
+                    baseTextContainer.classList.remove('hidden');
+                    document.getElementById('base-text-title').textContent = q.texto_base.titulo || "Texto Base para a Questão";
+                    document.getElementById('base-text-body').textContent = q.texto_base.conteudo;
+                } else {
+                    baseTextContainer.classList.add('hidden');
+                }
+
+                // Render Alternatives
+                const alternativesList = document.getElementById('exam-alternativas-list');
+                alternativasList.innerHTML = '';
+
+                const isConfirmed = !!this.confirmedAnswers[q.id];
+                const userSelected = this.selectedAnswers[q.id];
+
+                q.alternativas.forEach(alt => {
+                    const isChosen = userSelected === alt.letra;
+                    let cardStyle = "border-slate-200 hover:border-brand-300 bg-white hover:bg-slate-50";
+                    let badgeStyle = "bg-slate-100 text-slate-700 border-slate-300";
+
+                    if (isConfirmed) {
+                        if (alt.letra === q.gabarito) {
+                            cardStyle = "border-emerald-500 bg-emerald-50/70 text-emerald-950 font-medium";
+                            badgeStyle = "bg-emerald-600 text-white border-emerald-600";
+                        } else if (isChosen && alt.letra !== q.gabarito) {
+                            cardStyle = "border-rose-500 bg-rose-50/70 text-rose-950 font-medium";
+                            badgeStyle = "bg-rose-600 text-white border-rose-600";
+                        } else {
+                            cardStyle = "border-slate-200 opacity-60 bg-white";
+                        }
+                    } else if (isChosen) {
+                        cardStyle = "border-brand-600 bg-brand-50/80 text-brand-950 ring-2 ring-brand-500/20";
+                        badgeStyle = "bg-brand-600 text-white border-brand-600";
+                    }
+
+                    const optBtn = document.createElement('button');
+                    optBtn.className = `w-full text-left p-4 rounded-xl border-2 transition-all flex items-start gap-3.5 ${cardStyle} ${isConfirmed ? 'cursor-default' : 'cursor-pointer'}`;
+                    optBtn.onclick = () => {
+                        if (!isConfirmed) this.selectAlternative(q.id, alt.letra);
+                    };
+
+                    optBtn.innerHTML = `
+                        <span class="w-8 h-8 rounded-lg border text-sm font-black flex items-center justify-center shrink-0 ${badgeStyle}">
+                            ${alt.letra}
+                        </span>
+                        <span class="text-sm sm:text-base pt-1 leading-snug">
+                            ${alt.texto}
+                        </span>
+                    `;
+                    alternativasList.appendChild(optBtn);
+                });
+
+                // Update Feedback Box
+                const feedbackBox = document.getElementById('exam-feedback-box');
+                if (isConfirmed) {
+                    feedbackBox.classList.remove('hidden');
+                    const isCorrect = userSelected === q.gabarito;
+                    
+                    if (isCorrect) {
+                        feedbackBox.className = "p-5 rounded-xl border bg-emerald-50 border-emerald-200 text-emerald-900";
+                        document.getElementById('feedback-icon-container').innerHTML = `<i class="fa-solid fa-circle-check text-2xl text-emerald-600"></i>`;
+                        document.getElementById('feedback-title').textContent = "Resposta Correta! ✅";
+                    } else {
+                        feedbackBox.className = "p-5 rounded-xl border bg-rose-50 border-rose-200 text-rose-900";
+                        document.getElementById('feedback-icon-container').innerHTML = `<i class="fa-solid fa-circle-xmark text-2xl text-rose-600"></i>`;
+                        document.getElementById('feedback-title').textContent = `Resposta Incorreta. A alternativa correta é (${q.gabarito})`;
+                    }
+                    document.getElementById('feedback-explicacao').innerHTML = `<strong>Explicação:</strong> ${q.explicacao || 'Sem explicação cadastrada.'}`;
+                } else {
+                    feedbackBox.classList.add('hidden');
+                }
+
+                // Buttons state
+                const btnConfirm = document.getElementById('btn-confirm-answer');
+                const btnNext = document.getElementById('btn-next-question');
+                const btnPrev = document.getElementById('btn-prev-question');
+
+                btnPrev.disabled = this.currentIndex === 0;
+
+                if (isConfirmed) {
+                    btnConfirm.classList.add('hidden');
+                    btnNext.classList.remove('hidden');
+                    
+                    if (this.currentIndex === this.flatQuestions.length - 1) {
+                        document.getElementById('next-btn-text').textContent = "Finalizar e Ver Resultado";
+                    } else {
+                        document.getElementById('next-btn-text').textContent = "Próxima Questão";
+                    }
+                } else {
+                    btnConfirm.classList.remove('hidden');
+                    btnNext.classList.add('hidden');
+                    btnConfirm.disabled = !userSelected;
+                }
+
+                this.renderDrawerGrid();
+            }
+
+            selectAlternative(qId, letra) {
+                this.selectedAnswers[qId] = letra;
+                this.playSound('click');
+                this.saveProgressToStorage();
+                this.renderCurrentQuestion();
+            }
+
+            confirmAnswer() {
+                const q = this.flatQuestions[this.currentIndex];
+                if (!q || !this.selectedAnswers[q.id]) return;
+
+                this.confirmedAnswers[q.id] = true;
+                const isCorrect = this.selectedAnswers[q.id] === q.gabarito;
+
+                if (isCorrect) {
+                    this.playSound('correct');
+                } else {
+                    this.playSound('wrong');
+                }
+
+                this.saveProgressToStorage();
+                this.renderCurrentQuestion();
+            }
+
+            nextQuestion() {
+                if (this.currentIndex < this.flatQuestions.length - 1) {
+                    this.currentIndex++;
+                    this.playSound('click');
+                    this.renderCurrentQuestion();
+                } else {
+                    this.finishExamPrompt();
+                }
+            }
+
+            prevQuestion() {
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                    this.playSound('click');
+                    this.renderCurrentQuestion();
+                }
+            }
+
+            jumpToQuestion(index) {
+                this.currentIndex = index;
+                this.toggleNavDrawer(false);
+                this.renderCurrentQuestion();
+            }
+
+            toggleBaseText() {
+                const body = document.getElementById('base-text-body');
+                const label = document.getElementById('base-text-toggle-label');
+                const icon = document.getElementById('base-text-icon');
+
+                if (body.classList.contains('hidden')) {
+                    body.classList.remove('hidden');
+                    label.textContent = "Ocultar texto";
+                    icon.className = "fa-solid fa-chevron-up text-xs";
+                } else {
+                    body.classList.add('hidden');
+                    label.textContent = "Mostrar texto";
+                    icon.className = "fa-solid fa-chevron-down text-xs";
+                }
+            }
+
+            toggleNavDrawer(forceState) {
+                const drawer = document.getElementById('nav-drawer');
+                if (forceState !== undefined) {
+                    if (forceState) drawer.classList.remove('hidden');
+                    else drawer.classList.add('hidden');
+                } else {
+                    drawer.classList.toggle('hidden');
+                }
+            }
+
+            renderDrawerGrid() {
+                const grid = document.getElementById('drawer-grid');
+                grid.innerHTML = '';
+
+                this.flatQuestions.forEach((q, idx) => {
+                    const isCurrent = idx === this.currentIndex;
+                    const isConfirmed = !!this.confirmedAnswers[q.id];
+                    const selected = this.selectedAnswers[q.id];
+
+                    let btnStyle = "bg-slate-100 text-slate-700 border-slate-300 hover:bg-slate-200";
+
+                    if (isConfirmed) {
+                        if (selected === q.gabarito) {
+                            btnStyle = "bg-emerald-500 text-white border-emerald-600 font-bold";
+                        } else {
+                            btnStyle = "bg-rose-500 text-white border-rose-600 font-bold";
+                        }
+                    } else if (selected) {
+                        btnStyle = "bg-brand-500 text-white border-brand-600 font-bold";
+                    }
+
+                    if (isCurrent) {
+                        btnStyle += " ring-2 ring-slate-900 ring-offset-2";
+                    }
+
+                    grid.innerHTML += `
+                        <button onclick="app.jumpToQuestion(${idx})" class="h-10 rounded-xl border text-xs flex items-center justify-center transition-all ${btnStyle}">
+                            ${idx + 1}
+                        </button>
+                    `;
+                });
+            }
+
+            finishExamPrompt() {
+                const answeredCount = Object.keys(this.confirmedAnswers).length;
+                const total = this.flatQuestions.length;
+
+                if (answeredCount < total) {
+                    const unconfirmed = total - answeredCount;
+                    if (!confirm(`Atenção: Você possui ${unconfirmed} questão(ões) não confirmada(s). Deseja encerrar o simulado mesmo assim?`)) {
+                        return;
+                    }
+                }
+                
+                if (this.timerInterval) clearInterval(this.timerInterval);
+                localStorage.removeItem('ibgp_simulado_progress');
+                this.finishExam();
+            }
+
+            finishExam() {
+                if (this.timerInterval) clearInterval(this.timerInterval);
+                
+                let correctCount = 0;
+                let wrongCount = 0;
+
+                const subjectStats = {};
+
+                this.flatQuestions.forEach(q => {
+                    const subj = q.disciplina || 'Outros';
+                    if (!subjectStats[subj]) {
+                        subjectStats[subj] = { total: 0, correct: 0 };
+                    }
+                    subjectStats[subj].total++;
+
+                    const userAns = this.selectedAnswers[q.id];
+                    if (this.confirmedAnswers[q.id] && userAns === q.gabarito) {
+                        correctCount++;
+                        subjectStats[subj].correct++;
+                    } else {
+                        wrongCount++;
+                    }
+                });
+
+                const total = this.flatQuestions.length;
+                const percentage = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+                const minReq = this.provaData.prova.aprovacao_minima_percent || 60;
+                const isApproved = percentage >= minReq;
+
+                // UI Update for Result Card
+                const card = document.getElementById('result-status-card');
+                const title = document.getElementById('result-status-title');
+                const subtitle = document.getElementById('result-status-subtitle');
+                const badge = document.getElementById('result-status-badge');
+
+                if (isApproved) {
+                    card.className = "rounded-2xl p-6 sm:p-10 text-white shadow-2xl relative overflow-hidden text-center sm:text-left bg-gradient-to-br from-emerald-600 via-teal-700 to-slate-900";
+                    title.textContent = "Aprovado! 🎉";
+                    subtitle.textContent = "Excelente desempenho! Você superou a nota de corte do concurso.";
+                    badge.textContent = "Aprovação Garantida";
+                } else {
+                    card.className = "rounded-2xl p-6 sm:p-10 text-white shadow-2xl relative overflow-hidden text-center sm:text-left bg-gradient-to-br from-rose-700 via-slate-800 to-slate-900";
+                    title.textContent = "Reprovado ❌";
+                    subtitle.textContent = "Não foi desta vez. Revise as questões comentadas para reforçar o aprendizado.";
+                    badge.textContent = "Necessita Revisão";
+                }
+
+                document.getElementById('result-score-percent').textContent = `${percentage}%`;
+                document.getElementById('result-score-fraction').textContent = `${correctCount} de ${total} acertos`;
+
+                document.getElementById('stat-correct').textContent = correctCount;
+                document.getElementById('stat-wrong').textContent = wrongCount;
+                document.getElementById('stat-min').textContent = `${minReq}%`;
+
+                // Format Time Elapsed
+                const hrs = Math.floor(this.secondsElapsed / 3600);
+                const mins = Math.floor((this.secondsElapsed % 3600) / 60);
+                const secs = this.secondsElapsed % 60;
+                document.getElementById('stat-time').textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+                // Subject Breakdown UI
+                const subjectsContainer = document.getElementById('result-subjects-breakdown');
+                subjectsContainer.innerHTML = '';
+
+                Object.keys(subjectStats).forEach(subj => {
+                    const st = subjectStats[subj];
+                    const subjPct = st.total > 0 ? Math.round((st.correct / st.total) * 100) : 0;
+                    
+                    subjectsContainer.innerHTML += `
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between text-xs sm:text-sm font-semibold">
+                                <span class="text-slate-800">${subj}</span>
+                                <span class="text-slate-600">${st.correct}/${st.total} (${subjPct}%)</span>
+                            </div>
+                            <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                                <div class="h-full ${subjPct >= minReq ? 'bg-emerald-500' : 'bg-rose-500'} rounded-full transition-all duration-1000" style="width: ${subjPct}%"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                this.renderReviewList();
+                this.showScreen('result');
+            }
+
+            renderReviewList() {
+                const container = document.getElementById('review-list-container');
+                container.innerHTML = '';
+
+                this.flatQuestions.forEach((q, idx) => {
+                    const userSelected = this.selectedAnswers[q.id];
+                    const isConfirmed = !!this.confirmedAnswers[q.id];
+                    const isCorrect = isConfirmed && userSelected === q.gabarito;
+
+                    if (this.reviewFilter === 'correct' && !isCorrect) return;
+                    if (this.reviewFilter === 'wrong' && isCorrect) return;
+
+                    const itemCard = document.createElement('div');
+                    itemCard.className = `p-5 rounded-xl border ${isCorrect ? 'border-emerald-200 bg-emerald-50/30' : 'border-rose-200 bg-rose-50/30'} space-y-3`;
+
+                    let optionsHtml = '';
+                    q.alternativas.forEach(alt => {
+                        let optClass = "text-slate-600";
+                        let badgeClass = "bg-slate-100 text-slate-600";
+
+                        if (alt.letra === q.gabarito) {
+                            optClass = "text-emerald-900 font-bold";
+                            badgeClass = "bg-emerald-600 text-white";
+                        } else if (userSelected === alt.letra && alt.letra !== q.gabarito) {
+                            optClass = "text-rose-900 font-bold line-through";
+                            badgeClass = "bg-rose-600 text-white";
+                        }
+
+                        optionsHtml += `
+                            <div class="flex items-start gap-2 text-xs sm:text-sm">
+                                <span class="w-5 h-5 rounded font-black text-xs flex items-center justify-center shrink-0 ${badgeClass}">${alt.letra}</span>
+                                <span class="${optClass}">${alt.texto}</span>
+                            </div>
+                        `;
+                    });
+
+                    itemCard.innerHTML = `
+                        <div class="flex items-center justify-between border-b border-slate-200/80 pb-2">
+                            <span class="text-xs font-bold ${isCorrect ? 'text-emerald-700' : 'text-rose-700'}">
+                                Questão ${idx + 1} - ${isCorrect ? 'Acertou ✅' : 'Errou ❌'}
+                            </span>
+                            <span class="text-xs text-slate-500 font-medium">${q.disciplina}</span>
+                        </div>
+                        <p class="font-semibold text-slate-900 text-sm">${q.enunciado}</p>
+                        <div class="space-y-1.5 pl-2 border-l-2 border-slate-200">
+                            ${optionsHtml}
+                        </div>
+                        <div class="bg-white p-3 rounded-lg border border-slate-200 text-xs text-slate-700 leading-relaxed">
+                            <strong class="text-slate-900">Explicação:</strong> ${q.explicacao || 'Sem explicação.'}
+                        </div>
+                    `;
+                    container.appendChild(itemCard);
+                });
+            }
+
+            filterReview(type) {
+                this.reviewFilter = type;
+                ['all', 'correct', 'wrong'].forEach(t => {
+                    const btn = document.getElementById(`btn-filter-${t}`);
+                    if (t === type) {
+                        btn.className = "px-3 py-1.5 rounded-lg bg-white shadow-sm text-slate-800 font-bold";
+                    } else {
+                        btn.className = "px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-bold";
+                    }
+                });
+                this.renderReviewList();
+            }
+
+            restartExam() {
+                this.startExam();
+            }
+
+            openJsonModal() {
+                const textarea = document.getElementById('json-textarea');
+                textarea.value = JSON.stringify(this.provaData, null, 2);
+                document.getElementById('json-error-msg').classList.add('hidden');
+                document.getElementById('json-modal').classList.remove('hidden');
+            }
+
+            closeJsonModal() {
+                document.getElementById('json-modal').classList.add('hidden');
+            }
+
+            handleFileUpload(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('json-textarea').value = e.target.result;
+                };
+                reader.readAsText(file);
+            }
+
+            loadDefaultSampleJson() {
+                document.getElementById('json-textarea').value = JSON.stringify(DEFAULT_PROVA_DATA, null, 2);
+            }
+
+            applyCustomJson() {
+                const raw = document.getElementById('json-textarea').value;
+                const errBox = document.getElementById('json-error-msg');
+
+                try {
+                    const parsed = JSON.parse(raw);
+                    if (!parsed.prova || !parsed.prova.blocos) {
+                        throw new Error("JSON inválido. Deve conter o objeto 'prova' com um array de 'blocos'.");
+                    }
+
+                    this.provaData = parsed;
+                    localStorage.setItem('ibgp_prova_custom_data', JSON.stringify(parsed));
+                    this.processQuestionsData();
+                    this.setupUI();
+                    this.closeJsonModal();
+                    this.showScreen('intro');
+                } catch (err) {
+                    errBox.textContent = err.message;
+                    errBox.classList.remove('hidden');
+                }
+            }
+
+            exportProofJson() {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.provaData, null, 2));
+                const downloadAnchor = document.createElement('a');
+                downloadAnchor.setAttribute("href", dataStr);
+                downloadAnchor.setAttribute("download", `${this.provaData.prova.id || 'prova'}.json`);
+                document.body.appendChild(downloadAnchor);
+                downloadAnchor.click();
+                downloadAnchor.remove();
+            }
+
+            playSound(type) {
+                if (!this.soundEnabled) return;
+                try {
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    if (type === 'click') {
+                        osc.frequency.setValueAtTime(400, ctx.currentTime);
+                        gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+                        osc.start();
+                        osc.stop(ctx.currentTime + 0.05);
+                    } else if (type === 'correct') {
+                        osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                        osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.08); // E5
+                        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+                        osc.start();
+                        osc.stop(ctx.currentTime + 0.25);
+                    } else if (type === 'wrong') {
+                        osc.frequency.setValueAtTime(220, ctx.currentTime); // A3
+                        osc.frequency.setValueAtTime(180, ctx.currentTime + 0.1);
+                        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+                        osc.start();
+                        osc.stop(ctx.currentTime + 0.25);
+                    } else if (type === 'finish') {
+                        osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                        osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.15); // G5
+                        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+                        osc.start();
+                        osc.stop(ctx.currentTime + 0.4);
+                    }
+                } catch (e) {
+                    // Audio context fallback if blocked
+                }
+            }
+
+            toggleSound() {
+                this.soundEnabled = !this.soundEnabled;
+                const btn = document.getElementById('sound-toggle-btn');
+                btn.innerHTML = this.soundEnabled 
+                    ? `<i class="fa-solid fa-volume-high text-lg"></i>`
+                    : `<i class="fa-solid fa-volume-xmark text-lg text-rose-400"></i>`;
+            }
+
+            shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+        }
+
+        // Initialize App on DOM Load
+        let app;
+        window.addEventListener('DOMContentLoaded', () => {
+            app = new SimuladoApp();
+        });
+    </script>
+</body>
+</html>
