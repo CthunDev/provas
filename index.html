@@ -1183,7 +1183,7 @@
                 }
 
                 // Render Alternatives
-                const alternativesList = document.getElementById('exam-alternativas-list');
+                const alternativasList = document.getElementById('exam-alternativas-list');
                 alternativasList.innerHTML = '';
 
                 const isConfirmed = !!this.confirmedAnswers[q.id];
@@ -1191,37 +1191,53 @@
 
                 q.alternativas.forEach(alt => {
                     const isChosen = userSelected === alt.letra;
-                    let cardStyle = "border-slate-200 hover:border-brand-300 bg-white hover:bg-slate-50";
+                    let cardStyle = "border-slate-200 hover:border-brand-500 hover:bg-slate-50 bg-white text-slate-800 shadow-sm";
                     let badgeStyle = "bg-slate-100 text-slate-700 border-slate-300";
+                    let radioStyle = "border-slate-300 bg-white";
+                    let radioInner = "";
 
                     if (isConfirmed) {
                         if (alt.letra === q.gabarito) {
-                            cardStyle = "border-emerald-500 bg-emerald-50/70 text-emerald-950 font-medium";
+                            cardStyle = "border-emerald-500 bg-emerald-50/80 text-emerald-950 font-medium ring-2 ring-emerald-500/30";
                             badgeStyle = "bg-emerald-600 text-white border-emerald-600";
+                            radioStyle = "border-emerald-600 bg-emerald-600 text-white";
+                            radioInner = `<i class="fa-solid fa-check text-xs"></i>`;
                         } else if (isChosen && alt.letra !== q.gabarito) {
-                            cardStyle = "border-rose-500 bg-rose-50/70 text-rose-950 font-medium";
+                            cardStyle = "border-rose-500 bg-rose-50/80 text-rose-950 font-medium ring-2 ring-rose-500/30";
                             badgeStyle = "bg-rose-600 text-white border-rose-600";
+                            radioStyle = "border-rose-600 bg-rose-600 text-white";
+                            radioInner = `<i class="fa-solid fa-xmark text-xs"></i>`;
                         } else {
-                            cardStyle = "border-slate-200 opacity-60 bg-white";
+                            cardStyle = "border-slate-200 opacity-60 bg-white text-slate-500";
                         }
                     } else if (isChosen) {
-                        cardStyle = "border-brand-600 bg-brand-50/80 text-brand-950 ring-2 ring-brand-500/20";
+                        cardStyle = "border-brand-600 bg-brand-50 text-brand-950 ring-2 ring-brand-500 font-medium shadow-md";
                         badgeStyle = "bg-brand-600 text-white border-brand-600";
+                        radioStyle = "border-brand-600 bg-brand-600 text-white";
+                        radioInner = `<div class="w-2.5 h-2.5 rounded-full bg-white"></div>`;
                     }
 
                     const optBtn = document.createElement('button');
-                    optBtn.className = `w-full text-left p-4 rounded-xl border-2 transition-all flex items-start gap-3.5 ${cardStyle} ${isConfirmed ? 'cursor-default' : 'cursor-pointer'}`;
-                    optBtn.onclick = () => {
+                    optBtn.type = 'button';
+                    optBtn.className = `w-full text-left p-4 rounded-xl border-2 transition-all flex items-center justify-between gap-3 ${cardStyle} ${isConfirmed ? 'cursor-default' : 'cursor-pointer active:scale-[0.99] hover:shadow-md'} select-none`;
+                    
+                    optBtn.onclick = (e) => {
+                        e.preventDefault();
                         if (!isConfirmed) this.selectAlternative(q.id, alt.letra);
                     };
 
                     optBtn.innerHTML = `
-                        <span class="w-8 h-8 rounded-lg border text-sm font-black flex items-center justify-center shrink-0 ${badgeStyle}">
-                            ${alt.letra}
-                        </span>
-                        <span class="text-sm sm:text-base pt-1 leading-snug">
-                            ${alt.texto}
-                        </span>
+                        <div class="flex items-start gap-3.5 flex-1">
+                            <span class="w-8 h-8 rounded-lg border text-sm font-black flex items-center justify-center shrink-0 ${badgeStyle} transition-colors">
+                                ${alt.letra}
+                            </span>
+                            <span class="text-sm sm:text-base pt-1 leading-snug flex-1">
+                                ${alt.texto}
+                            </span>
+                        </div>
+                        <div class="w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ${radioStyle} transition-all">
+                            ${radioInner}
+                        </div>
                     `;
                     alternativasList.appendChild(optBtn);
                 });
